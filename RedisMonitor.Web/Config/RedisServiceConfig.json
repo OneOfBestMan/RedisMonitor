@@ -4,8 +4,8 @@
     "ServerDescribe": "本地"
   },
   {
-    "ServerHost": "192.168.153.138:6379,allowadmin=true,password=12345678",
-    "ServerDescribe": "测试环境"
+    "ServerHost": "120.132.94.138:6379,allowadmin=true",
+    "ServerDescribe": "Youzy.Test.Pc"
   },
   {
     "ServerHost": "192.168.153.141:6379,allowadmin=true",

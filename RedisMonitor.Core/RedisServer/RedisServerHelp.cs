@@ -44,6 +44,11 @@ namespace RedisMonitor.Core.RedisServer
             string hostAndPort = readWriteHosts.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)[0];
             return RedisConnectionHelp.GetConnectionMultiplexer(readWriteHosts).GetServer(hostAndPort);
         }
+        public static IDatabase GetRedisDatabase(string readWriteHosts)
+        {
+            string hostAndPort = readWriteHosts.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)[0];
+            return RedisConnectionHelp.GetConnectionMultiplexer(readWriteHosts).GetDatabase(1);
+        }
 
         /// <summary>
         /// 获取服务器信息
@@ -115,6 +120,36 @@ namespace RedisMonitor.Core.RedisServer
                 LogHelp.Error("GetClients方法异常", ex);
             }
             return clients;
+        }
+
+        public static IEnumerable<RedisKey> QueryKeys(string serverId)
+        {
+            RedisServerModel model = RedisServerConfig.RedisServers.FirstOrDefault(p => p.ServerId == serverId);
+            if (model != null)
+            {
+                var server = GetRedisServer(model.ServerHost);
+                RedisValue value = new RedisValue();
+                return server.Keys(1, value, 100, CommandFlags.None);
+            }
+            return null;
+        }
+
+        public static Dictionary<RedisKey,RedisValue> QueryValues(string serverId)
+        {
+            Dictionary<RedisKey, RedisValue> returnDic = new Dictionary<RedisKey, RedisValue>();
+            RedisServerModel model = RedisServerConfig.RedisServers.FirstOrDefault(p => p.ServerId == serverId);
+            if (model != null)
+            {
+                IDatabase db = GetRedisDatabase(model.ServerHost);
+                var keys = QueryKeys(serverId);
+                foreach (var item in keys)
+                {
+                    var RedisValue = db.StringGet(item,CommandFlags.None);
+                    returnDic.Add(item, RedisValue);
+                }
+            }
+            
+            return returnDic;
         }
 
         #region 辅助方法

@@ -43,6 +43,13 @@ namespace RedisMonitor.Web.Controllers
             return PartialView();
         }
 
+        public ActionResult Keys(string serverId)
+        {
+            var result = RedisServerHelp.QueryValues(serverId);
+            ViewBag.Clients = result;
+            return PartialView();
+        }
+
         public ActionResult GetClients(string serverId)
         {
             var result = RedisServerHelp.GetClients(serverId);

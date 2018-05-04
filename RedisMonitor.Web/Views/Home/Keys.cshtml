@@ -1,0 +1,49 @@
+﻿@using RedisMonitor.Core.Model
+@{
+    ViewBag.Title = "Keys信息";
+}
+@{
+    var clients = ViewBag.Clients as Dictionary<StackExchange.Redis.RedisKey, StackExchange.Redis.RedisValue>;
+}
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th title="Keys">Key</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (clients != null)
+        {
+            var count=0;
+            foreach (var item in clients)
+            {
+                count++;
+                <tr class="info" style="cursor:pointer">
+                    <td onclick="showValue(@count)">
+                        @item.Key
+                                        <input id="hd@(count)" type="hidden"  value="@item.Value"/>
+                                    </td>
+                  
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>暂无客户端连接</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div id="divValue">
+
+</div>
+<script>
+    function showValue(count) {
+
+        document.getElementById("divValue").innerHTML = document.getElementById("hd" + count).value;
+
+    }
+</script>
